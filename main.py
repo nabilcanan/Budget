@@ -14,7 +14,7 @@ class BudgetApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Budget Manager")
-        self.root.geometry("700x700")  # Set the size of the window
+        self.root.geometry("800x600")  # Set the initial size of the window
 
         self.total_expenses = 0
         self.monthly_income_after_taxes = 0
@@ -45,6 +45,9 @@ class BudgetApp:
 
         # Set up the export button
         self.setup_export_button()
+
+        # Create a context menu for the treeview
+        self.create_context_menu()
 
     def setup_income_input_fields(self):
         frame = tk.Frame(self.root, padx=20, pady=20)
@@ -99,6 +102,8 @@ class BudgetApp:
         self.tree.column("Cost", anchor=tk.E, width=150)
         self.tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
+        self.tree.bind("<Button-3>", self.show_context_menu)  # Bind right-click event to show context menu
+
     def setup_total_label(self):
         frame = tk.Frame(self.root, padx=20, pady=10)
         frame.pack(fill=tk.X)
@@ -119,6 +124,17 @@ class BudgetApp:
 
         self.export_button = ttk.Button(frame, text="Export to Excel", command=self.export_to_excel)
         self.export_button.pack(anchor=tk.E)
+
+    def create_context_menu(self):
+        self.context_menu = tk.Menu(self.root, tearoff=0)
+        self.context_menu.add_command(label="Delete Expense", command=self.delete_expense)
+
+    def show_context_menu(self, event):
+        try:
+            self.tree.selection_set(self.tree.identify_row(event.y))
+            self.context_menu.post(event.x_root, event.y_root)
+        finally:
+            self.context_menu.grab_release()
 
     def calculate_income_after_taxes(self):
         try:
@@ -156,11 +172,27 @@ class BudgetApp:
         self.expense_cost_entry.delete(0, tk.END)
         self.update_remaining_amount()
         self.update_table_height()
+        self.expense_name_entry.focus()  # Set focus back to expense name entry
 
     def update_table_height(self):
         # Adjust the tree view height based on the number of items
         row_count = len(self.tree.get_children())
         self.tree.config(height=row_count)
+
+        # Dynamically adjust window height
+        min_height = 600
+        row_height = 25
+        max_height = min_height + row_height * row_count
+        self.root.geometry(f"800x{max_height}")
+
+    def delete_expense(self):
+        selected_item = self.tree.selection()[0]
+        expense_cost = float(self.tree.item(selected_item)["values"][1][1:])
+        self.total_expenses -= expense_cost
+        self.tree.delete(selected_item)
+        self.total_label.config(text=f"Total Expenses: ${self.total_expenses:.2f}")
+        self.update_remaining_amount()
+        self.update_table_height()
 
     def update_remaining_amount(self):
         self.remaining_amount = self.monthly_income_after_taxes - self.total_expenses
