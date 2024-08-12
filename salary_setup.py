@@ -62,7 +62,7 @@ def setup_prebuilt_table(root):
     frame = tk.Frame(root, padx=20, pady=10)
     frame.pack(fill=tk.BOTH, expand=True)
 
-    tree = ttk.Treeview(frame, columns=("Expense", "Cost"), show='headings', height=8)  # Adjusted height
+    tree = ttk.Treeview(frame, columns=("Expense", "Cost"), show='headings', height=9)  # Adjust height as needed
     tree.heading("Expense", text="Expense")
     tree.heading("Cost", text="Cost")
     tree.column("Expense", anchor=tk.W, width=300)
@@ -70,7 +70,7 @@ def setup_prebuilt_table(root):
     tree.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
     expenses = ["Rent", "Car Insurance", "Groceries", "Utilities", "Savings", "Electricity", "Internet",
-                "Miscellaneous"]
+                "Miscellaneous", "Send to Dad"]
     for expense in expenses:
         tree.insert("", "end", values=(expense, "$0.00"))
 
