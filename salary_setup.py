@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-
 import pandas as pd
 
 FEDERAL_TAX_RATE = 0.22
@@ -47,7 +46,7 @@ def setup_income_input_fields(root, calculate_income_callback):
     return salary_entry, state_combobox
 
 
-def setup_buttons(root, add_expense_callback, open_debt_calculator_callback):
+def setup_buttons(root, add_expense_callback, open_debt_calculator_callback, open_schedule_planner_callback):
     frame = tk.Frame(root, padx=20, pady=10)
     frame.pack(fill=tk.X)
 
@@ -56,6 +55,9 @@ def setup_buttons(root, add_expense_callback, open_debt_calculator_callback):
 
     debt_calculator_button = ttk.Button(frame, text="Debt Payoff Calculator", command=open_debt_calculator_callback)
     debt_calculator_button.pack(side=tk.LEFT, padx=5)
+
+    schedule_planner_button = ttk.Button(frame, text="Plan a Schedule", command=open_schedule_planner_callback)
+    schedule_planner_button.pack(side=tk.LEFT, padx=5)
 
 
 def setup_prebuilt_table(root):
